@@ -27,18 +27,36 @@ def map_lines(lines: [str]):
     return items
 
 
-def knapsack(wt, val, capacity, items):
+def create_wt(mapped):
+    # create array of weights
+    weights = []
+    for key in mapped_items:
+        weights.append(mapped_items[key][0])
+    return weights
+
+
+def create_val(mapped):
+    # create array of values
+    values = []
+    for key in mapped_items:
+        values.append(mapped_items[key][1])
+    return values
+
+
+def knapsack(wt, val, capacity, items, t):
+    # base cases
     if items == 0 or capacity == 0:
         return 0
     if t[items][capacity] != -1:
         return t[items][capacity]
+
     if wt[items - 1] <= capacity:
         t[items][capacity] = max(val[items - 1] +
-                                 knapsack(wt, val, capacity - wt[items - 1], items - 1),
-                                 knapsack(wt, val, capacity, items - 1))
+                                 knapsack(wt, val, capacity - wt[items - 1], items - 1, t),
+                                 knapsack(wt, val, capacity, items - 1, t))
         return t[items][capacity]
     elif wt[items - 1] > capacity:
-        t[items][capacity] = knapsack(wt, val, capacity, n - 1)
+        t[items][capacity] = knapsack(wt, val, capacity, items - 1, t)
         return t[items][capacity]
 
 
@@ -53,13 +71,12 @@ if __name__ == "__main__":
 
     # Actually do the work
     mapped_items = map_lines(files)
-    val = []
-    wt = []
-    for key in mapped_items:
-        val.append(mapped_items[key][1])
-        wt.append(mapped_items[key][0])
-    n = numItems
+    val = create_val(mapped_items)
+    wt = create_wt(mapped_items)
 
-    t = [[-1 for i in range(capacity + 1)] for j in range(n + 1)]
-    print(knapsack(wt, val, capacity, n))
+    # initialize 2D matrix to all -1 values
+    t = [[-1 for i in range(capacity + 1)] for j in range(numItems + 1)]
+    print(knapsack(wt, val, capacity, numItems, t))
+
+
 
