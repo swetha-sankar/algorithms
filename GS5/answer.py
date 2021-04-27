@@ -8,6 +8,8 @@ Input: The filename of a local file containing a sequence of items, each on thei
 number of total items in the facility. The second line specifies the maximum capacity of the bookbag. All subsequent lines
 describe the sequence of items and contain three elements: Name Weight Value
 
+Solution: Finds the subset of items that maximize value while keeping <= threshold capacity
+Prints out the list of items and their total value
 
 '''
 
@@ -42,22 +44,43 @@ def create_val(mapped):
         values.append(mapped_items[key][1])
     return values
 
+def create_names(mapped):
+    # create array of names
+    names = []
+    for key in mapped_items:
+        names.append(key)
+    return names
 
-def knapsack(wt, val, capacity, items, t):
-    # base cases
+
+def knapsack(wt, val, capacity, items, t, names):
     if items == 0 or capacity == 0:
         return 0
-    if t[items][capacity] != -1:
-        return t[items][capacity]
 
-    if wt[items - 1] <= capacity:
-        t[items][capacity] = max(val[items - 1] +
-                                 knapsack(wt, val, capacity - wt[items - 1], items - 1, t),
-                                 knapsack(wt, val, capacity, items - 1, t))
-        return t[items][capacity]
-    elif wt[items - 1] > capacity:
-        t[items][capacity] = knapsack(wt, val, capacity, items - 1, t)
-        return t[items][capacity]
+    for i in range(items + 1):
+        for w in range(capacity + 1):
+            if i == 0 or w == 0:
+                t[i][w] = 0
+            elif wt[i - 1] <= w:
+                t[i][w] = max(val[i - 1]
+                              + t[i - 1][w - wt[i - 1]],
+                              t[i - 1][w])
+            else:
+                t[i][w] = t[i - 1][w]
+
+    result = t[items][capacity]
+    ans = t[items][capacity]
+    x = capacity
+    for i in range(items, 0, -1):
+        if result <= 0:
+            break
+        if result == t[i - 1][x]:
+            continue
+        else:
+            print(names[i - 1])
+            result = result - val[i - 1]
+            x = x - wt[i - 1]
+    print(ans)
+
 
 
 if __name__ == "__main__":
@@ -73,10 +96,11 @@ if __name__ == "__main__":
     mapped_items = map_lines(files)
     val = create_val(mapped_items)
     wt = create_wt(mapped_items)
+    names = create_names(mapped_items)
 
     # initialize 2D matrix to all -1 values
     t = [[-1 for i in range(capacity + 1)] for j in range(numItems + 1)]
-    print(knapsack(wt, val, capacity, numItems, t))
+    knapsack(wt, val, capacity, numItems, t, names)
 
 
 
