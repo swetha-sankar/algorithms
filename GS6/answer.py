@@ -13,9 +13,14 @@ calculated total cost of that tour.
 from itertools import permutations
 
 
-def tsp(mat, start, size):
-    # This probably has terrible runtime because it just permutes all combinations of the verticies and
-    # calculates the weight... just want to test against the baseline
+def tsp(mat, start, size)->int:
+    '''
+
+    :param mat: 2D matrix from input file
+    :param start: Vertex 0
+    :param size: Number of total verticies to visit
+    :return: Minimum cost
+    '''
     vertex = []
     for i in range(size):
         if i != start:
@@ -42,7 +47,6 @@ def tsp(mat, start, size):
         for i in last_path:
             if i < min_path:
                 min_path = i
-        min_path = min(min_path, current_pathweight)
     for i in dict_of_indicies[min_path]:
         print(i)
     return min_path
@@ -50,7 +54,7 @@ def tsp(mat, start, size):
 
 def create_matrix(files:[str]):
     '''
-    Create adjacency matrix
+    Create matrix
     :param files: File input
     :return: 2D adjacency matrix for TSP
     '''
@@ -73,7 +77,7 @@ if __name__ == "__main__":
     with open(filename) as data_file:
         files = data_file.readlines()
         length = len(files)
-    # Create adjacency matrix
+    # Create matrix
     mat = create_matrix(files)
     # Print path & least cost
     print(tsp(mat, 0, length))
