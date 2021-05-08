@@ -11,7 +11,6 @@ Output: The sequence of indices chosen to minimize the total distance travelled,
 calculated total cost of that tour.
 '''
 from itertools import permutations
-from sys import maxsize
 
 
 def tsp(mat, start, size):
@@ -21,29 +20,49 @@ def tsp(mat, start, size):
     for i in range(size):
         if i != start:
             vertex.append(i)
-    min_path = maxsize
     next_permutation = permutations(vertex)
+    last_path = []
+    dict_of_indicies = dict()
     for i in next_permutation:
         current_pathweight = 0
+        indicies = []
         k = start
         for j in i:
             current_pathweight += mat[k][j]
+            # Store the indicies that go into the final solution so that we can print
+            indicies.append(mat[k][j])
             k = j
         current_pathweight += mat[k][start]
+        indicies.append(mat[k][start])
+        if current_pathweight not in dict_of_indicies:
+            # store the indicies at the key value of the current pathweight
+            dict_of_indicies[current_pathweight] = indicies
+        min_path = current_pathweight
+        last_path.append(min_path)
+        for i in last_path:
+            if i < min_path:
+                min_path = i
         min_path = min(min_path, current_pathweight)
+    for i in dict_of_indicies[min_path]:
+        print(i)
     return min_path
 
 
 def create_matrix(files:[str]):
-    # create 2d matrix given the file input
+    '''
+    Create adjacency matrix
+    :param files: File input
+    :return: 2D adjacency matrix for TSP
+    '''
     matrix = []
     for file in files:
         point = file.split()
         x = int(point[0])
-        point_as_array = [x]
-        for thing in point[1:]:
-            point_as_array.append(int(thing))
-        matrix.append(point_as_array)
+        # Convert the point to an array and then add it to the adjacency matrix
+        arr = [x]
+        for item in point[1:]:
+            arr.append(int(item))
+        matrix.append(arr)
     return matrix
 
 
@@ -53,10 +72,11 @@ if __name__ == "__main__":
     # Open the file and read in its contents
     with open(filename) as data_file:
         files = data_file.readlines()
-        len = len(files)
+        length = len(files)
+    # Create adjacency matrix
     mat = create_matrix(files)
-    # Create the adjacency matrix
-    print(tsp(mat, 0, len))
+    # Print path & least cost
+    print(tsp(mat, 0, length))
 
 
 
