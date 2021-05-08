@@ -10,34 +10,42 @@ Each individual number represents the distance between the vertices given by the
 Output: The sequence of indices chosen to minimize the total distance travelled, and the
 calculated total cost of that tour.
 '''
-from itertools import combinations
+from itertools import permutations
+from sys import maxsize
 
 
-def tsp(m, S):
-    N = m.size
-    memo = t = [[-1 for i in range(N + 1)] for j in range(N + 1)]
-    setup(m, memo, S, N)
-    solve(m, memo, S, N)
-    minCost = findMinCost(m, memo, S, N)
-    tour = findOptimalTour(m, memo, S, N)
-    return (minCost, tour)
+def tsp(mat, start, size):
+    # This probably has terrible runtime because it just permutes all combinations of the verticies and
+    # calculates the weight... just want to test against the baseline
+    vertex = []
+    for i in range(size):
+        if i != start:
+            vertex.append(i)
+    min_path = maxsize
+    next_permutation = permutations(vertex)
+    for i in next_permutation:
+        current_pathweight = 0
+        k = start
+        for j in i:
+            current_pathweight += mat[k][j]
+            k = j
+        current_pathweight += mat[k][start]
+        min_path = min(min_path, current_pathweight)
+    return min_path
 
-def setup(m, memo, S, N):
-    for i in range(N):
-        if i == S:
-            continue
-        memo[i][i << S | 1 << i] = m[S][i]
 
-def solve(m, memo, S, N):
-    for i in range(3, N):
-        for subset in combinations(i, N):
-            if S not in subset:
-                continue
-            for next in range(N):
-                if next == S or next not in subset:
-                    continue
-                state = subset ^ (1 << next)
-                minDist = +float('inf')
+def create_matrix(files:[str]):
+    # create 2d matrix given the file input
+    matrix = []
+    for file in files:
+        point = file.split()
+        x = int(point[0])
+        point_as_array = [x]
+        for thing in point[1:]:
+            point_as_array.append(int(thing))
+        matrix.append(point_as_array)
+    return matrix
+
 
 if __name__ == "__main__":
     # Get the filename from stdin
@@ -46,17 +54,10 @@ if __name__ == "__main__":
     with open(filename) as data_file:
         files = data_file.readlines()
         len = len(files)
+    mat = create_matrix(files)
     # Create the adjacency matrix
-    matrix = []
-    for file in files:
-        point = file.split()
-        x = int(point[0])
-        point_as_array = [x]
-        for thing in point[1:]:
-           point_as_array.append(int(thing))
-        matrix.append(point_as_array)
-    print(matrix)
-    tsp(matrix, matrix[0])
+    print(tsp(mat, 0, len))
+
 
 
 
