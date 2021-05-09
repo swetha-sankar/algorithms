@@ -1,7 +1,5 @@
 
 import unittest
-
-
 from GS6 import answer
 
 # Swetha Sankar
@@ -21,20 +19,24 @@ class Testing(unittest.TestCase):
             ["0  3  4  2  7", "3  0  4  6  3", "4  4  0  5  8", "2  6  5  0  6", "7  3  8  6  0"])
         self.assertEqual(actual, [[0, 3, 4, 2, 7], [3, 0, 4, 6, 3], [4, 4, 0, 5, 8], [2, 6, 5, 0, 6], [7, 3, 8, 6, 0]])
 
+    def test_create_matrix3(self):
+        actual = answer.create_matrix(
+            ["0 1 2 3", "1 0 3 4", "2 3 0 5", "4 1 5 0"])
+        self.assertEqual(actual, [[0, 1, 2, 3], [1, 0, 3, 4], [2, 3, 0, 5], [4, 1, 5, 0]])
+
+    def test_opting2(self):
+        actual = answer.opt2([0, 1, 2, 3], [[0, 1, 2, 3], [1, 0, 3, 4], [2, 3, 0, 5], [4, 1, 5, 0]])
+        self.assertEqual(actual, [0, 1, 2, 3])
+
     def test_opt2(self):
         # Test the 2 opt function and make sure that it returns the better route
         actual = answer.opt2([0, 1, 2, 3, 4], [[0, 3, 4, 2, 7], [3, 0, 4, 6, 3], [4, 4, 0, 5, 8], [2, 6, 5, 0, 6], [7, 3, 8, 6, 0]])
         self.assertEqual(actual, [0, 3, 2, 1, 4])
 
-    def test_opt2_1(self):
-        actual = answer.opt2([4, 1, 2, 0, 3], [[0, 3, 4, 2, 7], [3, 0, 4, 6, 3], [4, 4, 0, 5, 8], [2, 6, 5, 0, 6], [7, 3, 8, 6, 0]])
-        self.assertEqual(actual, [4, 1, 2, 0, 3])
-
     def test_tsp(self):
         actual = answer.tsp([[0, 3, 4, 2, 7], [3, 0, 4, 6, 3], [4, 4, 0, 5, 8], [2, 6, 5, 0, 6], [7, 3, 8, 6, 0]], 0,
                             [0, 3, 2, 1, 4])
         self.assertEqual(actual, 21)
-
 
     def test_opt_again(self):
         # test w/ the 15 vertex just to make sure it produces proper output
@@ -67,8 +69,6 @@ class Testing(unittest.TestCase):
                                   [46, 21, 51, 64, 23, 59, 33, 37, 11, 37, 61, 55, 23, 59, 0]], 0,
                                 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
             self.assertEqual(actual, 366)
-
-
 
 
 if __name__ == '__main__':
