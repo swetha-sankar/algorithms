@@ -15,7 +15,7 @@ from itertools import permutations
 
 def tsp(mat, start, size)->int:
     '''
-
+    The most brute force solution I could think of to the travelling salesman problem (timed out the autograder though)
     :param mat: 2D matrix from input file
     :param start: Vertex 0
     :param size: Number of total verticies to visit
@@ -28,6 +28,7 @@ def tsp(mat, start, size)->int:
     next_permutation = permutations(vertex)
     last_path = []
     dict_of_indicies = dict()
+    min_path = 0
     for i in next_permutation:
         current_pathweight = 0
         indicies = []
@@ -44,11 +45,12 @@ def tsp(mat, start, size)->int:
             dict_of_indicies[current_pathweight] = indicies
         min_path = current_pathweight
         last_path.append(min_path)
-        for i in last_path:
-            if i < min_path:
-                min_path = i
-    for i in dict_of_indicies[min_path]:
-        print(i)
+        for path in last_path:
+            # Check whether it is the minimum path
+            if path < min_path:
+                min_path = path
+    for index in dict_of_indicies[min_path]:
+        print(index)
     return min_path
 
 
@@ -56,15 +58,16 @@ def create_matrix(files:[str]):
     '''
     Create matrix
     :param files: File input
-    :return: 2D adjacency matrix for TSP
+    :return: 2D matrix for TSP
     '''
     matrix = []
     for file in files:
         point = file.split()
         x = int(point[0])
-        # Convert the point to an array and then add it to the adjacency matrix
+        # Convert the point to an array and then add it to the matrix
         arr = [x]
         for item in point[1:]:
+            # Convert strings to ints to make tsp operations easier
             arr.append(int(item))
         matrix.append(arr)
     return matrix
