@@ -11,11 +11,30 @@ Output: The sequence of indices chosen to minimize the total distance travelled,
 calculated total cost of that tour.
 '''
 from itertools import permutations
+from random import randint, shuffle
 
+
+def cost_change(cost_mat, n1, n2, n3, n4):
+    return cost_mat[n1][n3] + cost_mat[n2][n4] - cost_mat[n1][n2] - cost_mat[n3][n4]
+
+
+def two_opt(route, cost_mat):
+    best = route
+    improved = True
+    while improved:
+        improved = False
+        for i in range(1, len(route) - 2):
+            for j in range(i + 1, len(route)):
+                if j - i == 1: continue
+                if cost_change(cost_mat, best[i - 1], best[i], best[j - 1], best[j]) < 0:
+                    best[i:j] = best[j - 1:i - 1:-1]
+                    improved = True
+        route = best
+    return best
 
 def tsp(mat, start, size)->int:
     '''
-    The most brute force solution I could think of to the travelling salesman problem (timed out the autograder though)
+    TSP brute force solution
     :param mat: 2D matrix from input file
     :param start: Vertex 0
     :param size: Number of total verticies to visit
@@ -82,8 +101,12 @@ if __name__ == "__main__":
         length = len(files)
     # Create matrix
     mat = create_matrix(files)
-    # Print path & least cost
+    initial = list(range(length))
+    #print(initial)
+    best_route = two_opt(initial, mat)
+    #print(best_route)
     print(tsp(mat, 0, length))
+
 
 
 
