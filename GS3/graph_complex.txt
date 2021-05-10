@@ -1,0 +1,11 @@
+10
+A empty B C
+B robot A D
+C empty A D E
+D empty B C E F I J
+E robot C D
+F empty D G
+G empty F H
+H empty G
+I empty D J
+J robot D I
